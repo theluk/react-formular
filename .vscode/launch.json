@@ -1,0 +1,33 @@
+{
+  // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+  // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+  // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "useWSL": true,
+      "name": "Jest tests",
+      "type": "node",
+      "request": "launch",
+      // "program": "${workspaceRoot}/node_modules/jest-cli/bin/jest.js",
+      "stopOnEntry": false,
+      "args": [
+        "--runInBand"
+      ],
+      "cwd": "${workspaceRoot}",
+      "preLaunchTask": null,
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script",
+        "test",
+        "--nolazy"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "console": "internalConsole",
+      "sourceMaps": true,
+      // "outFiles": []
+    }
+  ]
+}
