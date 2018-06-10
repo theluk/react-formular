@@ -78,21 +78,28 @@ function withValidation(WrappedComponent) {
   return withForm(WithValidation, `WithValidation(${getDisplayName(WrappedComponent)}`)
 }
 
-function withError(WrappedComponent) {
-  function WithError({ forField, ...props }) {
+function withError(WrappedComponent, { show = false } = {}) {
+  function WithError(props) {
+    // copy / leave field in props
+    const { field } = props
     return (
       <ValidationConsumer>
         {
           ({ errors }) => {
-            console.log(forField, errors)
-            if (forField !== undefined && errors.hasOwnProperty(forField)) {
-              console.log('returing error component')
-              return (
-                <WrappedComponent {...props} error={errors[forField]} />
-              )
+            let hasError = true
+            if (field !== undefined && errors.hasOwnProperty(field)) {
+              props['error'] = errors[field]
             } else if (Object.keys(errors).length > 0) {
+              props['errors'] = errors
+            } else {
+              hasError = false
+            }
+            if (props.hasOwnProperty('show')) {
+              show = props.show
+            }
+            if (!hasError || show) {
               return (
-                <WrappedComponent {...props} errors={errors} />
+                <WrappedComponent {...props} error={errors[field]} />
               )
             }
           }
@@ -103,7 +110,8 @@ function withError(WrappedComponent) {
 
   WithError.displayName = `WithErrors(${getDisplayName(WrappedComponent)})`
   WithError.propTypes = {
-    forField: PropTypes.string
+    field: PropTypes.string,
+    show: PropTypes.bool
   }
 
   return WithError
