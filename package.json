@@ -1,7 +1,7 @@
 {
   "name": "react-formular",
-  "version": "1.0.0",
-  "description": "A simple React library that helps with forms.",
+  "version": "0.1.0",
+  "description": "This libraray is an experimental approach to bind forms and its inputs and editors together using the new React Context API. It aims to be fully customizable and composable. It´s only a set of Higher-Order-Components. Because of the decoupled nature, Middlewares makes it easy to build custom Validations, Security Guards and other data interceptors. ",
   "author": "theluk",
   "license": "MIT",
   "repository": "theluk/react-formular",
@@ -18,9 +18,6 @@
     "deploy": "gh-pages -d example/build",
     "storybook": "start-storybook -p 9009",
     "build-storybook": "build-storybook"
-  },
-  "dependencies": {
-    "shallow-equals": "^1.0.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",
