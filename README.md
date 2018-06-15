@@ -4,6 +4,8 @@
 
 This libraray is an experimental approach to bind forms and its inputs and editors together using the new React Context API. It aims to be fully customizable and composable. It´s only a set of Higher-Order-Components.
 
+Because of the decoupled nature, [**Middlewares**](#`Middleware`Component ) makes it easy to build custom Validations, Security Guards and other data interceptors.  
+
 > **ATTENTION** this is not an ui library, it is just a set of tools to bind forms and its inputs together. 
 
 > **ATTENTION** I need help with this project, so let me know if you want to help
@@ -13,6 +15,7 @@ This libraray is an experimental approach to bind forms and its inputs and edito
 
 - Uses React Context API (requires 16.3)
 - Minimalistic approach
+- validation-as-[**middleware**](#`Middleware`Component ) approach  
 - Does not tell you how to design
 - Helps you with data flow only
 - Decouple form, validation and inputs completely from each other
@@ -20,6 +23,15 @@ This libraray is an experimental approach to bind forms and its inputs and edito
 - Focus on pure & stateless components
 - Support nesting
 - Support unopinionated validation
+
+## Overview of the API
+
+  - [provideFormular](#`provideFormular`)
+  - [withFormField](#`withFormField`)
+  - [formAware](#`formAware`)
+  - [withForm](#`withForm`)
+  - [Middleware](#`Middleware`Component ) Component
+  - [Validation](#Validation)
 
 ## When to use it
 
@@ -43,7 +55,7 @@ There are basically two main functionalities.
 
 For this there are two basic Higher-Order-Components which can be created
 
-# `provideFormular(Component)`
+# `provideFormular`
 
 provides the data context and returns a HOC in which you can pass `initialData` and `onChange`
 
@@ -63,7 +75,7 @@ render(
 )
 ```
 
-# `withFormField(WrappedComponent)`
+# `withFormField`
 
 creates an connected HOC which can be bound to a specific property in the data object. 
 The WrappedComponent wil receive the `value` and the field-bound `update` function.
@@ -85,7 +97,7 @@ render(
 )
 ```
 
-# `formAware(func, displayName)`
+# `formAware`
 
 creates a helper HOC that is a `formular` data consumer. 
 It expects a function as first argument that will be called with and that function should
@@ -113,7 +125,7 @@ the HOC `withFormField` uses it under the hood to connect it to one single field
   )
 ```
 
-# `withForm(Component)`
+# `withForm`
 
 A convenient function that uses `formAware`. It in constrast supports non-functional components.
 
@@ -123,76 +135,57 @@ A convenient function that uses `formAware`. It in constrast supports non-functi
   ))
 ```
 
-# `withValidation(Component)`
+# `Middleware`Component 
 
-returns a HOC that can be placed anywhere within the form. It then acts like a guard or a middleware. It calls the passed in `onValidate` callback that has the same signature as the `update` method. Actually it just overrides the `update` method with its own logic, and only when validation passes, it will call the `update`. As the `withValidation` function is using `withForm`, the correct `update` function is injected automatically. 
+a Middleware Component is an easy way to step into the update process of the data flow. 
+Data flows for example from an Input to the Form. So in case you want to check if the data that flows
+is correct, you can step in the middle and check the data. You can also think of it as an way to validate your data, 
+but I named it Middleware, because I think there is more than validation. 
 
-`onValidate` should return an array so that it could be desctructed as follows
-    
-    const [isValid, errors] = onValidate();
+the `Middleware` component expects the `use` prop which will be called as follows: `(data, update, fail) => ...`
 
-#### Example
++ `data`            is the changed data from descending components
++ `update(data)`    is a function you should call with the data that need to be commited
++ `fail(errors)`    as a function you should call with an object, where very key is the field having an error
 
-define a component which can handle validation. Actually enhancing `Component` is already everything you need to do.
-
+#### simple (direct) usage
 ```jsx
-const Validator = withValidation(Component)
-```
+const update = (data) => console.log(data)
 
-define your validations. Use any libraray you like for that. 
-
-> **NOTE** the API of the return statement is WIP
-
-```jsx
-const onValidate = (field, value) => {
-  if (field === "hello") {
-    return [true, null]
-  } else {
-    return [false, {field: 'Only `hello` can be edited'}]
-  }
-}
-const onChange = (newData) => { console.log(newData) }
-```
-
-the `onChange` method will only be called when the `Validator` passes the changed data through.
-```jsx
-render(
-  <Form initialData={data} onChange={onChange}>
-    <Validator onValidate={onValidate}>
-      <Input field="hello" type="text" />
-      <Input field="world" type="text" />
-    </Validator>
+(
+  <Form onChange={update}>
+    <Middleware use={(data, update, fail) => (/*...*/)}>
+      <Input />
+    </Middleware>
   </Form>
 )
 ```
 
-#### Validation on fields directly
+# Validation
 
-because of the nature of composing, you can actually build yourself a HOC that can validate single inputs where you define your validation directly.
+`react-formular` does not tell you how or where to validate your data. But this library gives you a usefull helper. It´s the `Middleware`Component and you can use it to build a Validator. 
 
-```jsx
-const withRegexValidatorForField = InputComponent => ({regex, field, ...props}) => {
-  // simple regex valdation method
-  const onValidate = (field, value) => regex.test(value) ? [true, null] : [false, 'Error'];
-  return (
-    <Validator onValidate={onValidate}>
-      <InputComponent field={field} {...props} />
-    </Validator>
-  )
-}
-
-const RegexInput = withRegexValidatorForField(Input)
-```
+#### example
 
 ```jsx
-render(
-  <Form initialData={data} onChange={onChange}>
-    <RegexInput field="hello" type="text" regex={ /world/ } />
-  </Form>
+import { validate } from 'email-validator'
+
+const EmailValidator = ({
+  field, children, errorMessage = 'Please use a correct email'
+}) => (
+  <Middleware use={(data, update, fail) => {
+    if (validate(data[field])) {
+      update(data)
+    } else {
+      fail({[field]: errorMessage})
+    }
+  }}>
+    { children }
+  </Middleware>
 )
 ```
 
-# `withError(Component)`
+# `withError`
 
 creates a HOC that passes you the `error` or the `errors` props. 
 If you build your Component with the `field` prop, then your ErrorComponent will only 

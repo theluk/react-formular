@@ -33,7 +33,7 @@ function withFormField(WrappedComponent) {
       <WrappedComponent
         {...props}
         value={data[field]}
-        update={value => update(field, value)}
+        update={value => update({ [field]: value })}
       />
     ),
     `WithFormField(${getDisplayName(WrappedComponent)})`

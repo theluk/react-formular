@@ -4,11 +4,13 @@ const { Provider: DataProvider, Consumer: DataConsumer } = React.createContext({
   update: null,
   data: null
 })
-const { Provider: ValidationProvider, Consumer: ValidationConsumer } = React.createContext()
+const { Provider: ErrorProvider, Consumer: ErrorConsumer } = React.createContext({
+  errors: {}
+})
 
 export {
   DataConsumer,
   DataProvider,
-  ValidationConsumer,
-  ValidationProvider
+  ErrorConsumer,
+  ErrorProvider
 }

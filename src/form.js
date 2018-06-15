@@ -16,17 +16,14 @@ function provideFormular(WrappedComponent) {
       this.state = {data: initialData}
     }
 
-    onUpdate(field, value) {
+    onUpdate(newData) {
       const { onChange } = this.props
-      const { data } = this.state
-      const newData = {
-        ...data,
-        [field]: value
+      newData = {
+        ...this.state.data,
+        ...newData
       }
-
       onChange(newData)
-
-      this.setState({data: newData})
+      this.setState({ data: newData })
     }
 
     render() {

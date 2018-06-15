@@ -1,5 +1,5 @@
 import React from 'react'
-import { provideFormular, withFormField } from './index'
+import { provideFormular, withFormField, Middleware } from './index'
 import { create } from 'react-test-renderer'
 
 const Input = withFormField((props) => <input onChange={(e) => props.update(e.target.value)} value={props.value} />)
@@ -8,6 +8,40 @@ const Form = provideFormular(({children, ...props}) => (
     {children}
   </div>
 ))
+
+test('basic middleware', () => {
+  const onChange = jest.fn()
+
+  const s = create(
+    <Form initialData={{test: 'foo'}} onChange={onChange}>
+      <Middleware use={(data, update, fail) => (
+        data.test === 'two' ? update(data) : fail({test: 'Test must be two'})
+      )}>
+        <Input field='test' />
+      </Middleware>
+    </Form>
+  )
+
+  const input = s.root.findByType('input')
+  expect(input.props.value).toEqual('foo')
+
+  input.props.onChange({
+    target: {
+      value: 'something'
+    }
+  })
+
+  expect(onChange.mock.calls.length).toBe(0)
+
+  input.props.onChange({
+    target: {
+      value: 'two'
+    }
+  })
+
+  expect(onChange.mock.calls.length).toBe(1)
+
+})
 
 test('formular basic functionality', () => {
   const onChange = jest.fn()
@@ -29,8 +63,8 @@ test('formular basic functionality', () => {
     }
   })
 
-  expect(input.props.value).toEqual('bar')
   expect(onChange.mock.calls[0][0]).toEqual({'test': 'bar'})
+  expect(input.props.value).toEqual('bar')
 })
 
 test('formular with nested functionality', () => {
