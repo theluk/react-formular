@@ -4,7 +4,7 @@
 
 This libraray is an experimental approach to bind forms and its inputs and editors together using the new React Context API. It aims to be fully customizable and composable. It´s only a set of Higher-Order-Components.
 
-Because of the decoupled nature, [**Middlewares**](#MiddlewareComponent) makes it easy to build custom Validations, Security Guards and other data interceptors.  
+Because of the decoupled nature, [**Middlewares**](#middlewarecomponent) makes it easy to build custom Validations, Security Guards and other data interceptors.  
 
 > **ATTENTION** this is not an ui library, it is just a set of tools to bind forms and its inputs together. 
 
@@ -15,7 +15,7 @@ Because of the decoupled nature, [**Middlewares**](#MiddlewareComponent) makes i
 
 - Uses React Context API (requires 16.3)
 - Minimalistic approach
-- validation-as-[**middleware**](#MiddlewareComponent) approach  
+- validation-as-[**middleware**](#middlewarecomponent) approach  
 - Does not tell you how to design
 - Helps you with data flow only
 - Decouple form, validation and inputs completely from each other
@@ -26,12 +26,12 @@ Because of the decoupled nature, [**Middlewares**](#MiddlewareComponent) makes i
 
 ## Overview of the API
 
-  - [provideFormular](#provideFormular)
-  - [withFormField](#withFormField)
-  - [formAware](#formAware)
-  - [withForm](#withForm)
-  - [Middleware](#MiddlewareComponent ) Component
-  - [Validation](#Validation)
+  - [provideFormular](#provideformular)
+  - [withFormField](#withformfield)
+  - [formAware](#formaware)
+  - [withForm](#withform)
+  - [Middleware](#middlewarecomponent ) Component
+  - [Validation](#validation)
 
 ## When to use it
 
