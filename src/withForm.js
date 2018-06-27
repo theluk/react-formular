@@ -2,6 +2,8 @@ import React from 'react'
 import { DataConsumer } from './context'
 import { getDisplayName } from './common'
 
+const identity = value => value;
+
 /**
  * formAware creates a function which
  * returns a Component that calls the
@@ -12,7 +14,7 @@ function formAware(handler, displayName) {
   function FormAware(props) {
     return (
       <DataConsumer>
-        { ({ data, update }) => handler({ ...props, data, update }) }
+        { ({ data, update }) => handler({ data, update, ...props }) }
       </DataConsumer>
     )
   }
@@ -27,13 +29,13 @@ function formAware(handler, displayName) {
  * the form props (update and data) and value of
  * the specified field
  */
-function withFormField(WrappedComponent) {
+const withFormField = (valueSelector = identity) => WrappedComponent => {
   return formAware(
     ({ data, update, field, ...props }) => (
       <WrappedComponent
         {...props}
         value={data[field]}
-        update={value => update({ [field]: value })}
+        onChange={value => update({ [field]: valueSelector(value) })}
       />
     ),
     `WithFormField(${getDisplayName(WrappedComponent)})`

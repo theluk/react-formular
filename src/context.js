@@ -2,7 +2,7 @@ import React from 'react'
 
 const { Provider: DataProvider, Consumer: DataConsumer } = React.createContext({
   update: null,
-  data: null
+  data: {}
 })
 const { Provider: ErrorProvider, Consumer: ErrorConsumer } = React.createContext({
   errors: {}

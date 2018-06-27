@@ -2,12 +2,23 @@ import React from 'react'
 import { provideFormular, withFormField, Middleware } from './index'
 import { create } from 'react-test-renderer'
 
-const Input = withFormField((props) => <input onChange={(e) => props.update(e.target.value)} value={props.value} />)
-const Form = provideFormular(({children, ...props}) => (
-  <div {...props}>
-    {children}
-  </div>
-))
+const Input = withFormField(e => e.target.value)('input')
+const Form = provideFormular()
+
+test('provideFormular', () => {
+  const Form = provideFormular()
+  const s = create(<Form />)
+  expect(s.toJSON().type).toBe('form')
+
+  const DivForm = provideFormular('div')
+  const d = create(<DivForm />)
+  expect(d.toJSON().type).toBe('div')
+})
+
+test('withFormField', () => {
+  const rendered = create(<Form initialData={{}}><Input field="value" type="text" /></Form>)
+  rendered.root.findByType('input').props.onChange({target: {value: 'foo'}})
+})
 
 test('basic middleware', () => {
   const onChange = jest.fn()

@@ -1,6 +1,6 @@
 {
   "name": "react-formular",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This libraray is an experimental approach to bind forms and its inputs and editors together using the new React Context API. It aims to be fully customizable and composable. It´s only a set of Higher-Order-Components. Because of the decoupled nature, Middlewares makes it easy to build custom Validations, Security Guards and other data interceptors. ",
   "author": "theluk",
   "license": "MIT",
@@ -20,9 +20,8 @@
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
-    "prop-types": "^15.5.4",
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.6",

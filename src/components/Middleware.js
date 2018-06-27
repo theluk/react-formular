@@ -12,7 +12,7 @@ class Middleware extends Component {
     // calling it means passing the data up.
     update: PropTypes.func.isRequired,
     data: PropTypes.shape(),
-    children: PropTypes.children
+    children: PropTypes.node
   }
 
   state = {

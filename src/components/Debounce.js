@@ -6,7 +6,7 @@ export default class Debounce extends React.Component {
   timeout = null
 
   static propTypes = {
-    children: PropTypes.children,
+    children: PropTypes.node,
     wait: PropTypes.number
   }
 

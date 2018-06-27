@@ -3,6 +3,10 @@ import PropTypes from 'prop-types'
 import { DataProvider, getDisplayName, formAware } from './index'
 
 function provideFormular(WrappedComponent) {
+  if (WrappedComponent === undefined) {
+    WrappedComponent = 'form'
+  }
+
   class ProvideFormular extends Component {
     static displayName = `WithForm(${getDisplayName(WrappedComponent)})`
 
@@ -22,7 +26,10 @@ function provideFormular(WrappedComponent) {
         ...this.state.data,
         ...newData
       }
-      onChange(newData)
+      if (typeof onChange === 'function') {
+        onChange(newData)
+      }
+
       this.setState({ data: newData })
     }
 
@@ -43,12 +50,13 @@ function provideFormular(WrappedComponent) {
 
   return formAware(
     ({ data, update, field, ...props }) => {
+      const isNested = typeof update === 'function' && field !== undefined;
       if (field === undefined && typeof update === 'function') {
         throw new Error('Nested form usage without field specification')
       }
       props = {
         initialData: field !== undefined && data.hasOwnProperty(field) ? data[field] : null,
-        onChange: newData => update(field, newData),
+        onChange: isNested && (newData => update({ [field]: newData })),
         ...props
       }
 
